@@ -9,12 +9,15 @@ import {BsModalRef} from 'ngx-bootstrap/modal';
 export class EditModalComponent implements OnInit {
   @Input() data: any;
   @Output() closeModal: EventEmitter<void> = new EventEmitter<void>();
-  modalRef: any;
+  widgetId: number;
+  query: string;
 
   constructor() {
   }
 
   ngOnInit(): void {
+    this.widgetId = this.data.widgetId;
+    this.query = this.data.query;
     console.log(this.data);
   }
 

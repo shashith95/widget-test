@@ -8,9 +8,8 @@
         </button>
       </div>
       <div class="modal-body">
-        <form>
-          <!-- Form fields -->
-        </form>
+        <textarea [(ngModel)]="query" class="form-control" placeholder="Enter your SQL query here..."
+                  rows="5"></textarea>
       </div>
       <div class="modal-footer">
         <button (click)="onClose()" class="btn btn-secondary" type="button">Close</button>

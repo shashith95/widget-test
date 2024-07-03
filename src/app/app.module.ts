@@ -8,6 +8,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {WidgetComponent} from './widget/widget.component';
 import {EditModalComponent} from './widget/edit-modal/edit-modal.component';
 import {ModalModule} from 'ngx-bootstrap/modal';
+import {FormsModule} from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import {ModalModule} from 'ngx-bootstrap/modal';
     BrowserAnimationsModule,
     MatIconModule,
     MatButtonModule,
-    ModalModule.forRoot()
+    ModalModule.forRoot(),
+    FormsModule
   ],
   providers: [],
   entryComponents: [EditModalComponent],
