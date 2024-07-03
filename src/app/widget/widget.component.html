@@ -6,10 +6,12 @@
 
   <ng-container *ngIf="widgetType === 'score-card'">
     This is a {{ widgetType }}
-    <div class="summary-line">
-      <h3> Summary </h3>
-      <p> 1000 </p>
-    </div>
+    <ng-container *ngFor="let data of widgetDataSet">
+      <div class="summary-line">
+        <h3> {{ data.label }} </h3>
+        <p> {{ data.value }} </p>
+      </div>
+    </ng-container>
   </ng-container>
 
   <ng-container *ngIf="widgetType === 'bar-chart'">
