@@ -1,1 +1,31 @@
-<p>widget works!</p>
+<div class="widget">
+  <button (click)="editQuery()" class="edit-button" mat-icon-button>
+    <mat-icon>edit</mat-icon>
+  </button>
+  <br>
+
+  <ng-container *ngIf="widgetType === 'score-card'">
+    This is a {{ widgetType }}
+    <div class="summary-line">
+      <h3> Summary </h3>
+      <p> 1000 </p>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="widgetType === 'bar-chart'">
+    This is a {{ widgetType }}
+    <div class="summary-line">
+      <h3> Summary </h3>
+      <p> 1000 </p>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="widgetType === 'pie-chart'">
+    This is a {{ widgetType }}
+    <div class="summary-line">
+      <h3> Summary </h3>
+      <p> 1000 </p>
+    </div>
+  </ng-container>
+
+</div>

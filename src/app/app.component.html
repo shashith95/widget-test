@@ -1,9 +1,8 @@
 <div class="widgets-container">
-  <div class="widget" *ngFor="let summary of summaryCounts">
-    <button mat-icon-button class="edit-button" (click)="editQuery()">
-      <mat-icon>edit</mat-icon>
-    </button>
-    <h3>{{ summary.title }}</h3>
-    <p>{{ summary.count }}</p>
-  </div>
+  <ng-container *ngFor="let data of dataList">
+    <app-widget [query]="data.query"
+                [widgetId]="data.widgetId"
+                [widgetType]="data.widgetType">
+    </app-widget>
+  </ng-container>
 </div>

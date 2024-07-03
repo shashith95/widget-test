@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 
 @Component({
   selector: 'app-widget',
@@ -6,10 +6,17 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./widget.component.scss']
 })
 export class WidgetComponent implements OnInit {
+  @Input() widgetId: number;
+  @Input() query: string;
+  @Input() widgetType: string;
 
   constructor() { }
 
   ngOnInit() {
+    console.log(this.widgetId + ' | ' + this.query);
   }
 
+  editQuery() {
+
+  }
 }

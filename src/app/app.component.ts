@@ -1,20 +1,18 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
-  title = 'widget-test';
+export class AppComponent implements OnInit {
+  dataList: { widgetId: number, query: string, widgetType: string }[] = [];
 
-  summaryCounts: {title: string, count: number}[] = [
-    { title: 'Users', count: 1500 },
-    { title: 'Orders', count: 320 },
-    { title: 'Products', count: 85 }
-  ];
-
-  editQuery() {
-    confirm("Are you sure?")
+  ngOnInit(): void {
+    this.dataList = [
+      {widgetId: 1, query: 'select count(*) from table', widgetType: 'score-card'},
+      {widgetId: 2, query: 'select count(*) from table', widgetType: 'pie-chart'},
+      {widgetId: 3, query: 'select count(*) from table', widgetType: 'bar-chart'}
+    ];
   }
 }
