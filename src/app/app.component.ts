@@ -7,4 +7,14 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'widget-test';
+
+  summaryCounts: {title: string, count: number}[] = [
+    { title: 'Users', count: 1500 },
+    { title: 'Orders', count: 320 },
+    { title: 'Products', count: 85 }
+  ];
+
+  editQuery() {
+    confirm("Are you sure?")
+  }
 }
