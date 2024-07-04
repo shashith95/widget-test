@@ -13,6 +13,8 @@ import {HighchartsChartModule} from 'highcharts-angular';
 import {ColumnChartComponent} from './widget/column-chart/column-chart.component';
 import {PieChartComponent} from './widget/pie-chart/pie-chart.component';
 import {SummaryCardComponent} from './widget/summary-card/summary-card.component';
+import {CodemirrorModule} from '@ctrl/ngx-codemirror';
+import {NgSelectModule} from '@ng-select/ng-select';
 
 @NgModule({
   declarations: [
@@ -31,7 +33,9 @@ import {SummaryCardComponent} from './widget/summary-card/summary-card.component
     MatButtonModule,
     ModalModule.forRoot(),
     FormsModule,
-    HighchartsChartModule
+    HighchartsChartModule,
+    CodemirrorModule,
+    NgSelectModule,
   ],
   providers: [],
   entryComponents: [EditModalComponent],

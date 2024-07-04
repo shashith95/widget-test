@@ -32,7 +32,7 @@ export class WidgetComponent implements OnInit {
       data: this.selectedData,
     };
 
-    this.modalRef = this.modalService.show(EditModalComponent, {initialState});
+    this.modalRef = this.modalService.show(EditModalComponent, {initialState, class: 'my-custom-modal modal-lg'});
 
     this.modalRef.content.closeModal.subscribe((): void => {
       this.modalRef.hide();

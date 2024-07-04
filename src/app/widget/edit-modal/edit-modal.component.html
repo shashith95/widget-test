@@ -8,8 +8,40 @@
         </button>
       </div>
       <div class="modal-body">
-        <textarea [(ngModel)]="query" class="form-control" placeholder="Enter your SQL query here..."
-                  rows="5"></textarea>
+        <button (click)="addParams()" [disabled]="addParamsClicked" class="btn btn-secondary" type="button">Add Params
+        </button>
+        <div>
+          <div *ngIf="addParamsClicked">
+            <label for="param-type">Param Type</label>
+            <select (change)="onSelect($event.target.value)" id="param-type">
+              <option *ngFor="let paramType of paramTypeList" [value]="paramType.id">
+                {{ paramType.value }}
+              </option>
+            </select>
+            <br>
+            <label for="param-name">Param Name</label>
+            <input [(ngModel)]="paramName" id="param-name" type="text"/>
+            <br>
+            <button (click)="saveParam()" class="btn btn-sm btn-primary" type="button">Save Param</button>
+          </div>
+          <div *ngIf="savedParamList && savedParamList.length > 0" class="chip-list">
+            <div *ngFor="let param of savedParamList" class="chip">
+              {{ param.paramName }} ==
+              <button (click)="applyToQuery(param)" class="btn btn-outline-warning">applyToQuery</button>
+              <button (click)="remove(param)" class="close-button">x</button>
+            </div>
+          </div>
+          <br>
+        </div>
+        <br>
+        <br>
+
+        <ngx-codemirror #codeMirror
+                        [(ngModel)]="query"
+                        [options]="config"
+                        style="height: 100%;"
+        ></ngx-codemirror>
+
       </div>
       <div class="modal-footer">
         <button (click)="onClose()" class="btn btn-secondary" type="button">Close</button>
