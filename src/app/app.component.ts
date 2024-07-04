@@ -12,7 +12,7 @@ export class AppComponent implements OnInit {
     this.dataList = [
       {widgetId: 1, query: 'select count(*) from table', widgetType: 'score-card'},
       {widgetId: 2, query: 'select count(*) from table', widgetType: 'pie-chart'},
-      {widgetId: 3, query: 'select count(*) from table', widgetType: 'bar-chart'}
+      {widgetId: 3, query: 'select count(*) from table', widgetType: 'column-chart'}
     ];
   }
 }

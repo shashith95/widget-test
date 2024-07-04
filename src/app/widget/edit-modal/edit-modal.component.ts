@@ -22,7 +22,7 @@ export class EditModalComponent implements OnInit {
   }
 
   onSave(): void {
-    // Handle save logic here
+
     this.closeModal.emit();
   }
 

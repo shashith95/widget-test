@@ -28,14 +28,13 @@ export class WidgetComponent implements OnInit {
 
   editQuery(): void {
     this.selectedData = {widgetId: this.widgetId, query: this.query};
-    const initialState = {
+    const initialState: any = {
       data: this.selectedData,
     };
 
-    this.modalRef = this.modalService.show(EditModalComponent, {initialState}); // Show modal with component and initial state
+    this.modalRef = this.modalService.show(EditModalComponent, {initialState});
 
-    this.modalRef.content.closeModal.subscribe(() => {
-      console.log('Modal closed');
+    this.modalRef.content.closeModal.subscribe((): void => {
       this.modalRef.hide();
     });
   }

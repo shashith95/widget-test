@@ -1,0 +1,6 @@
+<ng-container *ngIf="dataSet">
+  <div *ngFor="let data of dataSet" class="summary-line">
+    <h3> {{ data.label }} </h3>
+    <p> {{ data.value }} </p>
+  </div>
+</ng-container>
