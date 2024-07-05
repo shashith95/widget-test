@@ -6,17 +6,17 @@ import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angula
   styleUrls: ['./edit-modal.component.scss']
 })
 export class EditModalComponent implements OnInit {
-  // @ts-ignore
-  @ViewChild('codeMirror') codeMirror: any;
+
+  @ViewChild('codeMirror', {static: true}) codeMirror: any;
   @Input() data: any;
-  @Output() closeModal: EventEmitter<void> = new EventEmitter<void>();
+  @Output() closeModal: EventEmitter<any> = new EventEmitter<any>();
   widgetId: number;
   query: string;
   paramName: string;
   paramType: string;
   paramTypeList: any[] = [
-    {id: '1', value: 'Text'},
-    {id: '2', value: 'Date'},
+    {id: '1', value: 'text'},
+    {id: '2', value: 'date'},
   ];
   config: any = {
     // lineNumbers: true,
@@ -32,6 +32,7 @@ export class EditModalComponent implements OnInit {
     this.widgetId = this.data.widgetId;
     this.query = this.data.query;
     console.log(this.data);
+    this.paramType = 'text';
   }
 
   addParams(): void {
@@ -39,7 +40,7 @@ export class EditModalComponent implements OnInit {
   }
 
   onSave(): void {
-    this.closeModal.emit();
+    this.closeModal.emit(this.savedParamList);
   }
 
   onClose(): void {
@@ -65,45 +66,57 @@ export class EditModalComponent implements OnInit {
     }
   }
 
-  applyToQuery(param: { id: number; paramType: string; paramName: string }) {
+  applyToQuery(param: { id: number; paramType: string; paramName: string }): void {
     let cm = this.codeMirror.codeMirror;
 
-    cm.replaceSelection('$$' + param.paramName + '', 'around');
-    var from = cm.getCursor('from');
-    var to = cm.getCursor('to');
+    // Replace the current selection with the parameter name wrapped in $$ symbols
+    cm.replaceSelection(`$$${param.paramName}`, 'around');
+
+    // Get the current cursor position before and after the replacement
+    let from = cm.getCursor('from');
+    let to = cm.getCursor('to');
+
+    // Create a marker to replace the text with the parameter ID and make it non-clearable
     let mark = cm.markText(from, to, {
-      replacedWith: param.id,
+      replacedWith: document.createTextNode(`$$${param.paramName}`), // Create text node with param ID
       clearWhenEmpty: false
     });
 
-    if (this.enter) {
-      this.codeMirror.codeMirror.on(mark, 'beforeCursorEnter', function(): void {
-        const direction: string = this.posEq(cm.getCursor(), mark.find().from)
-          ? 'left'
-          : 'right';
-        cm.widgetEnter = (mark, direction) => {
-          if (mark.find()) {
-            this.enter(direction);
-          } else {
-            this.cm.refresh();
-          }
-        };
-
-        cm.widgetEnter(mark, direction);
+    // Attach the enter event if it exists
+    if (this.widgetEnter) {
+      cm.on('beforeCursorEnter', (): void => {
+        const direction: string = this.posEq(cm.getCursor(), mark.find().from) ? 'left' : 'right';
+        this.widgetEnter(mark, direction);
       });
     }
 
+    // Set the cursor to the end of the replaced text and refresh the editor
     cm.setCursor(to);
     cm.refresh();
   }
 
-  enter(node, direction) {
-    var t = node.find('.value');
-    t.focus();
-    if (direction === 'left') {
-      t.setCursorPosition(0);
-    } else {
-      t.setCursorPosition(t.val().length);
+  widgetEnter(mark, direction): void {
+    if (!mark.find()) {
+      this.codeMirror.codeMirror.refresh();
+      return;
     }
+
+    // Find the value node inside the marked text
+    let valueNode = mark.find().element.querySelector('.value');
+    if (valueNode) {
+      valueNode.focus();
+
+      // Set cursor position based on the direction
+      if (direction === 'left') {
+        valueNode.setSelectionRange(0, 0);
+      } else {
+        valueNode.setSelectionRange(valueNode.value.length, valueNode.value.length);
+      }
+    }
+  }
+
+  // Helper function to check if two positions are equal
+  posEq(pos1, pos2): boolean {
+    return pos1.line === pos2.line && pos1.ch === pos2.ch;
   }
 }

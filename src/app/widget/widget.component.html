@@ -6,6 +6,12 @@
 
   <ng-container *ngIf="widgetType === 'score-card'">
     This is a {{ widgetType }}
+    <ng-container *ngIf="savedParamList && savedParamList.length > 0">
+      <div *ngFor="let param of savedParamList">
+        <label [for]="param.paramName">{{ param.paramName }}</label>
+        <input [id]="param.paramName" [type]="param.paramType.toLowerCase()"/>
+      </div>
+    </ng-container>
     <app-summary-card [dataSet]="widgetDataSet"></app-summary-card>
   </ng-container>
 

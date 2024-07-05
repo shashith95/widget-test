@@ -14,6 +14,7 @@ export class WidgetComponent implements OnInit {
   widgetDataSet: { label: string, value: number }[] = [];
   selectedData: { widgetId: number, query: string };
   modalRef: BsModalRef | null;
+  savedParamList: { id: number, paramType: string, paramName: string }[];
 
   constructor(private modalService: BsModalService) {
   }
@@ -34,7 +35,8 @@ export class WidgetComponent implements OnInit {
 
     this.modalRef = this.modalService.show(EditModalComponent, {initialState, class: 'my-custom-modal modal-lg'});
 
-    this.modalRef.content.closeModal.subscribe((): void => {
+    this.modalRef.content.closeModal.subscribe((savedParamList: any[]): void => {
+      this.savedParamList = savedParamList;
       this.modalRef.hide();
     });
   }
