@@ -5,14 +5,25 @@
   <br>
 
   <ng-container *ngIf="widgetType === 'score-card'">
-    This is a {{ widgetType }}
+    {{ widgetTitle }}
+    <br>
     <ng-container *ngIf="savedParamList && savedParamList.length > 0">
       <div *ngFor="let param of savedParamList">
         <label [for]="param.paramName">{{ param.paramName }}</label>
         <input [id]="param.paramName" [type]="param.paramType.toLowerCase()"/>
       </div>
     </ng-container>
-    <app-summary-card [dataSet]="widgetDataSet"></app-summary-card>
+    <ng-container *ngIf="savedSummaryList && savedSummaryList.length">
+      <div>
+        <label for="from-date">From Date</label>
+        <input [(ngModel)]="fromDate" id="from-date" type="datetime-local"/>
+      </div>
+      <div>
+        <label for="to-date">To Date</label>
+        <input [(ngModel)]="toDate" id="to-date" type="datetime-local"/>
+      </div>
+    </ng-container>
+    <app-summary-card [dataSet]="summaryDataSet"></app-summary-card>
   </ng-container>
 
   <ng-container *ngIf="widgetType === 'column-chart'">

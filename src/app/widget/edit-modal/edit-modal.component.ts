@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, OnInit, Output, Renderer2} from '@angular/core';
 
 @Component({
   selector: 'app-edit-modal',
@@ -6,26 +6,34 @@ import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angula
   styleUrls: ['./edit-modal.component.scss']
 })
 export class EditModalComponent implements OnInit {
-
-  @ViewChild('codeMirror', {static: true}) codeMirror: any;
-  @Input() data: any;
+  @Input() widgetTitle: string;
+  @Input() data: { widgetId: number, query: string };
+  @Input() summaryDataSet: { label: string, value: number }[];
+  @Input() savedParamList: { id: number, paramType: string, paramName: string }[];
   @Output() closeModal: EventEmitter<any> = new EventEmitter<any>();
   widgetId: number;
   query: string;
   paramName: string;
   paramType: string;
   paramTypeList: any[] = [
+    {id: '-1', value: 'Select a param type'},
     {id: '1', value: 'text'},
     {id: '2', value: 'date'},
   ];
+  dateColumnList: string[] = ['admitted_date', 'registered_date'];
   config: any = {
     // lineNumbers: true,
     mode: 'text/x-sql',
   };
   addParamsClicked: boolean = false;
-  savedParamList: { id: number, paramType: string, paramName: string }[] = [];
+  addSummaryDataClicked: boolean = false;
+  paramId: number = 0;
+  summaryQueryList: { id: number, label: string, query: string, dateColumn: string, fromDate: string, toDate: string }[];
+  selectedDateColumn: string;
+  selectedLabelName: string;
+  selectedQuery: string;
 
-  constructor() {
+  constructor(private el: ElementRef, private renderer: Renderer2) {
   }
 
   ngOnInit(): void {
@@ -40,7 +48,7 @@ export class EditModalComponent implements OnInit {
   }
 
   onSave(): void {
-    this.closeModal.emit(this.savedParamList);
+    this.closeModal.emit({savedParamList: this.savedParamList, savedSummaryList: this.summaryQueryList});
   }
 
   onClose(): void {
@@ -52,8 +60,38 @@ export class EditModalComponent implements OnInit {
     this.paramType = value;
   }
 
+  saveSummaryData(): void {
+    if (this.summaryQueryList) {
+      this.summaryQueryList.push({
+        id: this.paramId++,
+        label: this.selectedLabelName,
+        query: this.selectedQuery,
+        dateColumn: this.selectedDateColumn,
+        fromDate: undefined,
+        toDate: undefined
+      });
+    } else {
+      this.summaryQueryList = [{
+        id: this.paramId++,
+        label: this.selectedLabelName,
+        query: this.selectedQuery,
+        dateColumn: this.selectedDateColumn,
+        fromDate: undefined,
+        toDate: undefined
+      }];
+    }
+    this.addSummaryDataClicked = !this.addSummaryDataClicked;
+    this.selectedLabelName = undefined;
+    this.selectedQuery = undefined;
+    this.selectedDateColumn = undefined;
+  }
+
   saveParam(): void {
-    this.savedParamList.push({id: 1, paramType: this.paramType, paramName: this.paramName});
+    if (this.savedParamList) {
+      this.savedParamList.push({id: this.paramId++, paramType: this.paramType, paramName: this.paramName});
+    } else {
+      this.savedParamList = [{id: this.paramId++, paramType: this.paramType, paramName: this.paramName}];
+    }
     this.addParamsClicked = !this.addParamsClicked;
     this.paramType = undefined;
     this.paramName = undefined;
@@ -67,7 +105,8 @@ export class EditModalComponent implements OnInit {
   }
 
   applyToQuery(param: { id: number; paramType: string; paramName: string }): void {
-    let cm = this.codeMirror.codeMirror;
+    const codeMirrorElement = this.el.nativeElement.querySelector('#query .CodeMirror');
+    let cm = codeMirrorElement.CodeMirror;
 
     // Replace the current selection with the parameter name wrapped in $$ symbols
     cm.replaceSelection(`$$${param.paramName}`, 'around');
@@ -86,7 +125,7 @@ export class EditModalComponent implements OnInit {
     if (this.widgetEnter) {
       cm.on('beforeCursorEnter', (): void => {
         const direction: string = this.posEq(cm.getCursor(), mark.find().from) ? 'left' : 'right';
-        this.widgetEnter(mark, direction);
+        this.widgetEnter(mark, direction, cm);
       });
     }
 
@@ -95,9 +134,9 @@ export class EditModalComponent implements OnInit {
     cm.refresh();
   }
 
-  widgetEnter(mark, direction): void {
+  widgetEnter(mark, direction, cm): void {
     if (!mark.find()) {
-      this.codeMirror.codeMirror.refresh();
+      cm.refresh();
       return;
     }
 
@@ -118,5 +157,26 @@ export class EditModalComponent implements OnInit {
   // Helper function to check if two positions are equal
   posEq(pos1, pos2): boolean {
     return pos1.line === pos2.line && pos1.ch === pos2.ch;
+  }
+
+  addSummaryData(): void {
+    this.addSummaryDataClicked = !this.addSummaryDataClicked;
+  }
+
+  onSelectDate(value: any): void {
+    this.selectedDateColumn = value;
+  }
+
+  editSummaryData(summary: { id: number, label: string, query: string, dateColumn: string }): void {
+    this.selectedQuery = summary.query;
+    this.selectedLabelName = summary.label;
+    this.selectedDateColumn = summary.dateColumn;
+  }
+
+  deleteSummaryData(summary: { id: number, label: string, query: string, dateColumn: string, fromDate: string, toDate: string }): void {
+    const index: number = this.summaryQueryList.indexOf(summary);
+    if (index >= 0) {
+      this.summaryQueryList.splice(index, 1);
+    }
   }
 }

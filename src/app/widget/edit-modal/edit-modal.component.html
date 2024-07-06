@@ -8,39 +8,92 @@
         </button>
       </div>
       <div class="modal-body">
-        <button (click)="addParams()" [disabled]="addParamsClicked" class="btn btn-secondary" type="button">Add Params
-        </button>
-        <div>
-          <div *ngIf="addParamsClicked">
-            <label for="param-type">Param Type</label>
-            <select (change)="onSelect($event.target.value)" id="param-type">
-              <option *ngFor="let paramType of paramTypeList" [value]="paramType.id">
-                {{ paramType.value }}
-              </option>
-            </select>
-            <br>
-            <label for="param-name">Param Name</label>
-            <input [(ngModel)]="paramName" id="param-name" type="text"/>
-            <br>
-            <button (click)="saveParam()" class="btn btn-sm btn-primary" type="button">Save Param</button>
-          </div>
-          <div *ngIf="savedParamList && savedParamList.length > 0" class="chip-list">
-            <div *ngFor="let param of savedParamList" class="chip">
-              {{ param.paramName }} ==
-              <button (click)="applyToQuery(param)" class="btn btn-outline-warning">applyToQuery</button>
-              <button (click)="remove(param)" class="close-button">x</button>
-            </div>
-          </div>
+        <label for="widget-title">Enter Title</label>
+        <input [(ngModel)]="widgetTitle" id="widget-title" type="text">
+        <br>
+        <ng-container *ngIf="summaryDataSet && summaryDataSet.length > 0">
+          <button (click)="addSummaryData()" class="btn btn-primary" type="button">Add Summary Data</button>
           <br>
-        </div>
-        <br>
-        <br>
+          <ng-container *ngIf="addSummaryDataClicked">
+            <br>
+            <button (click)="addParams()" [disabled]="addParamsClicked" class="btn btn-secondary" type="button">Add
+              Params
+            </button>
+            <div>
+              <div *ngIf="addParamsClicked">
+                <label for="param-type">Param Type</label>
+                <select (change)="onSelect($event.target.value)" id="param-type">
+                  <option *ngFor="let paramType of paramTypeList" [value]="paramType.id">
+                    {{ paramType.value }}
+                  </option>
+                </select>
+                <br>
+                <label for="param-name">Param Name</label>
+                <input [(ngModel)]="paramName" id="param-name" type="text"/>
+                <br>
+                <button (click)="saveParam()" class="btn btn-sm btn-primary" type="button">Save Param</button>
+              </div>
+              <div *ngIf="savedParamList && savedParamList.length > 0" class="chip-list">
+                <div *ngFor="let param of savedParamList" class="chip">
+                  {{ param.paramName }} ==
+                  <button (click)="applyToQuery(param)" class="btn btn-outline-success">applyToQuery</button>
+                  <button (click)="remove(param)" class="close-button">x</button>
+                </div>
+              </div>
+              <br>
+            </div>
+            <br>
+            <div>
+              <label for="label-name">Enter Label Name</label>
+              <input [(ngModel)]="selectedLabelName" id="label-name" placeholder="Enter Label Name" type="text"> <br>
+              <label for="query">Enter Query</label>
+              <ngx-codemirror #codeMirror [(ngModel)]="selectedQuery"
+                              [options]="config"
+                              id="query"
+                              style="height: 10%;"
+              ></ngx-codemirror>
+              <label for="date-field">Select Date Field</label>
+              <select (change)="onSelectDate($event.target.value)" id="date-field">
+                <option *ngFor="let dateColumn of dateColumnList" [value]="dateColumn">
+                  {{ dateColumn }}
+                </option>
+              </select> <br>
+              <button (click)="saveSummaryData()" class="btn btn-sm btn-success" type="button">Save</button>
+            </div>
+          </ng-container>
+          <br>
 
-        <ngx-codemirror #codeMirror
-                        [(ngModel)]="query"
-                        [options]="config"
-                        style="height: 100%;"
-        ></ngx-codemirror>
+          <ng-container *ngIf="summaryQueryList">
+            <table class="table">
+              <thead>
+              <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Label Name</th>
+                <th scope="col">Query</th>
+                <th scope="col">Date Column</th>
+                <th scope="col">Edit</th>
+                <th scope="col">Delete</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let summary of summaryQueryList">
+                <td>{{ summary.id }}</td>
+                <td>{{ summary.label }}</td>
+                <td>{{ summary.query }}</td>
+                <td>{{ summary.dateColumn }}</td>
+                <td>
+                  <button (click)="editSummaryData(summary)" class="btn btn-sm btn-light" type="button">Edit</button>
+                </td>
+                <td>
+                  <button (click)="deleteSummaryData(summary)" class="btn btn-sm btn-danger" type="button">Delete
+                  </button>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </ng-container>
+
+        </ng-container>
 
       </div>
       <div class="modal-footer">
